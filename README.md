@@ -267,7 +267,11 @@ VITE_WHATSAPP=919876543210
 ### Backend (Render / Railway)
 ```env
 NODE_ENV=production
-MONGO_URI=mongodb+srv://user:pass@cluster.mongodb.net/travelyug
+## Environment Variables
+
+Create a .env file in backend folder:
+
+MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=<change-to-long-random-string>
 FRONTEND_URL=https://your-app.vercel.app
 ```
