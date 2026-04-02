@@ -87,7 +87,7 @@ export default function HomePage() {
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
             Ride Through the Himalayas
             <br />
-            <span className="text-yellow-400">Spiti • Lahaul • Northeast</span>
+            <span className="text-yellow-400">Spiti • Ladakh • Northeast</span>
           </h1>
           <p className="text-base sm:text-lg text-white/85 mb-6 sm:mb-8 max-w-xl mx-auto">
             Bike expeditions, mountain roads, and unforgettable journeys with TravelYug.
