@@ -4,6 +4,24 @@ const { protect } = require('../middleware/auth');
 const Package     = require('../models/Package');
 const Testimonial = require('../models/Testimonial');
 const Gallery     = require('../models/Gallery');
+const Admin       = require('../models/Admin');
+const bcrypt      = require('bcryptjs');
+
+/* POST /api/admin/create-admin  ─ creates admin user (run once, then remove) */
+router.post('/create-admin', async (req, res) => {
+  try {
+    await Admin.deleteMany({});
+    const hashed = await bcrypt.hash('GauravSharma0165', 10);
+    await Admin.create({
+      name: 'Travelyug Admin',
+      email: 'admin@travelyug.com',
+      password: hashed
+    });
+    res.json({ success: true, message: 'Admin created! You can now login.' });
+  } catch (err) {
+    res.json({ success: false, message: err.message });
+  }
+});
 
 /* POST /api/admin/seed  ─ demo data (dev) */
 router.post('/seed', async (req, res, next) => {
