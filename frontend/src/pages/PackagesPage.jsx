@@ -236,7 +236,7 @@ export function PackageDetail() {
                 <span className="flex items-center gap-1.5"><FiUsers className="text-secondary" />Max {pkg.maxGroupSize}</span>
               </div>
               {pkg.itineraryPdf && (
-                <a href={`http://localhost:5000${pkg.itineraryPdf}`} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full mb-5 py-2.5 px-4 rounded-xl border-2 border-primary text-primary font-semibold text-sm hover:bg-primary hover:text-white transition-all">
+                <a href={`https://travelyug-backend.onrender.com${pkg.itineraryPdf}`} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full mb-5 py-2.5 px-4 rounded-xl border-2 border-primary text-primary font-semibold text-sm hover:bg-primary hover:text-white transition-all">
                   📄 Download Itinerary (PDF)
                 </a>
               )}
