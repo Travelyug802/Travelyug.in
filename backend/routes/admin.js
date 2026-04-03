@@ -6,7 +6,7 @@ const Testimonial = require('../models/Testimonial');
 const Gallery     = require('../models/Gallery');
 
 /* POST /api/admin/seed  ─ demo data (dev) */
-router.post('/seed', protect, async (req, res, next) => {
+router.post('/seed', async (req, res, next) => {
   try {
     await Promise.all([Package.deleteMany({}), Testimonial.deleteMany({}), Gallery.deleteMany({})]);
 
