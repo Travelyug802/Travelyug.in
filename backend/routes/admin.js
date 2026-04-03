@@ -10,16 +10,19 @@ const bcrypt      = require('bcryptjs');
 /* POST /api/admin/create-admin  ─ creates admin user (run once, then remove) */
 router.post('/create-admin', async (req, res) => {
   try {
+    const Admin = require('../models/Admin');
+    const bcrypt = require('bcryptjs');
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash('GauravSharma0165', salt);
     await Admin.deleteMany({});
-    const hashed = await bcrypt.hash('GauravSharma0165', 10);
-    await Admin.create({
+    const admin = await Admin.create({
       name: 'Travelyug Admin',
       email: 'admin@travelyug.com',
       password: hashed
     });
-    res.json({ success: true, message: 'Admin created! You can now login.' });
+    res.json({ success: true, message: 'Admin created!', id: admin._id });
   } catch (err) {
-    res.json({ success: false, message: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
