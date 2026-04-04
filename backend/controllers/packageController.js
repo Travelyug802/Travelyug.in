@@ -1,6 +1,4 @@
 'use strict';
-const path    = require('path');
-const fs      = require('fs');
 const Package = require('../models/Package');
 
 exports.getPackages = async (req, res, next) => {
@@ -39,7 +37,7 @@ exports.create = async (req, res, next) => {
   try {
     const data = req.file && req.body.packageData ? JSON.parse(req.body.packageData) : { ...req.body };
     if (req.file) {
-      data.itineraryPdf = req.file.path;
+      data.itineraryPdf = req.file.secure_url || req.file.path;
     }
     const pkg = await Package.create(data);
     res.status(201).json({ success: true, message: 'Package created.', data: pkg });
@@ -60,29 +58,25 @@ exports.update = async (req, res, next) => {
       data = { ...req.body };
     }
 
-    // 🔥 Step 2: FIX all JSON string fields (FormData issue)
-const fieldsToParse = ["images", "itinerary", "highlights", "inclusions"];
+    // Step 2: FIX all JSON string fields (FormData issue)
+    const fieldsToParse = ["images", "itinerary", "highlights", "inclusions"];
 
-fieldsToParse.forEach((field) => {
-  if (data[field] && typeof data[field] === "string") {
-    try {
-      data[field] = JSON.parse(data[field]);
-    } catch (err) {
-      console.log(`${field} parse error:`, err);
-    }
-  }
-});
+    fieldsToParse.forEach((field) => {
+      if (data[field] && typeof data[field] === "string") {
+        try {
+          data[field] = JSON.parse(data[field]);
+        } catch (err) {
+          console.log(`${field} parse error:`, err);
+        }
+      }
+    });
 
-// Debug logs (optional but useful)
-console.log("IMAGES TYPE AFTER:", typeof data.images);
-console.log("ITINERARY TYPE AFTER:", typeof data.itinerary);
+    console.log("IMAGES TYPE AFTER:", typeof data.images);
+    console.log("ITINERARY TYPE AFTER:", typeof data.itinerary);
 
     // Step 3: Handle PDF
     if (req.file) {
-      
-      
-
-      data.itineraryPdf = `/uploads/itineraries/${req.file.filename}`;
+      data.itineraryPdf = req.file.secure_url || req.file.path;
     }
 
     // Step 4: Update
@@ -121,11 +115,6 @@ exports.remove = async (req, res, next) => {
 
 /* ─── TRIP DATE SEAT BOOKING ────────────────── */
 
-/**
- * POST /api/packages/:id/book-seat
- * Body: { tripDateId, seats, name, email, phone }
- * Increments bookedSeats, recalculates status, prevents overbooking
- */
 exports.bookSeat = async (req, res, next) => {
   try {
     const { tripDateId, seats = 1, name, email, phone } = req.body;
@@ -145,14 +134,12 @@ exports.bookSeat = async (req, res, next) => {
 
     tripDate.bookedSeats += requested;
 
-    // Recompute status unless manual override
     if (!tripDate.isManualOverride) {
       tripDate.status = Package.computeTripDateStatus(tripDate.totalSeats, tripDate.bookedSeats);
     }
 
     await pkg.save();
 
-    // Create a linked booking record
     const Booking = require('../models/Booking');
     await Booking.create({
       name, email,
@@ -182,10 +169,6 @@ exports.bookSeat = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-/**
- * PUT /api/packages/:id/trip-dates  (admin)
- * Replace all trip dates for a package
- */
 exports.updateTripDates = async (req, res, next) => {
   try {
     let { tripDates } = req.body;
@@ -194,7 +177,6 @@ exports.updateTripDates = async (req, res, next) => {
     const pkg = await Package.findById(req.params.id);
     if (!pkg) return res.status(404).json({ success: false, message: 'Package not found.' });
 
-    // Auto-compute status for non-manual dates
     pkg.tripDates = (tripDates || []).map(td => {
       if (!td.isManualOverride) {
         td.status = Package.computeTripDateStatus(td.totalSeats || 20, td.bookedSeats || 0);

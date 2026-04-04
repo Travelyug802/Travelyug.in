@@ -11,12 +11,12 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: {
+  params: async (req, file) => ({
     folder: 'travelyug/itineraries',
     resource_type: 'raw',
-    allowed_formats: ['pdf'],
-    public_id: (req, file) => `itinerary-${Date.now()}`
-  }
+    format: 'pdf',
+    public_id: `itinerary-${Date.now()}`
+  })
 });
 
 module.exports = multer({ storage });
