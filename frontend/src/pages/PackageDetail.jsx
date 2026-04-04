@@ -203,7 +203,7 @@ export default function PackageDetail() {
               <h2 className="text-xl font-heading font-bold mb-3">Overview</h2>
               <p className="text-gray-600 leading-relaxed">{pkg.description}</p>
               {pkg.itineraryPdf && (
-                <a href={`${import.meta.env.VITE_API_URL?.replace('/api','')}${pkg.itineraryPdf}`}
+                <a href={pkg.itineraryPdf}
                   target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 mt-4 text-sm text-primary font-semibold hover:underline">
                   <FiDownload /> Download PDF Itinerary
