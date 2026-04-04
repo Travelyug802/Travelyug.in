@@ -39,7 +39,7 @@ exports.create = async (req, res, next) => {
   try {
     const data = req.file && req.body.packageData ? JSON.parse(req.body.packageData) : { ...req.body };
     if (req.file) {
-      data.itineraryPdf = `/uploads/itineraries/${req.file.filename}`;
+      data.itineraryPdf = req.file.path;
     }
     const pkg = await Package.create(data);
     res.status(201).json({ success: true, message: 'Package created.', data: pkg });
@@ -79,14 +79,8 @@ console.log("ITINERARY TYPE AFTER:", typeof data.itinerary);
 
     // Step 3: Handle PDF
     if (req.file) {
-      const existing = await Package.findById(req.params.id)
-        .select('itineraryPdf')
-        .lean();
-
-      if (existing?.itineraryPdf) {
-        const oldPath = path.join(__dirname, '..', existing.itineraryPdf);
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-      }
+      
+      
 
       data.itineraryPdf = `/uploads/itineraries/${req.file.filename}`;
     }
