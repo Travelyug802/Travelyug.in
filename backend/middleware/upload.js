@@ -1,28 +1,22 @@
 'use strict';
-const multer  = require('multer');
-const path    = require('path');
-const fs      = require('fs');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const multer = require('multer');
 
-const uploadDir = path.join(__dirname, '..', 'uploads', 'itineraries');
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, uploadDir),
-  filename:    (_req, file, cb) => {
-    const unique = Date.now() + '-' + Math.round(Math.random() * 1e6);
-    cb(null, 'itinerary-' + unique + '.pdf');
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'travelyug/itineraries',
+    resource_type: 'raw',
+    allowed_formats: ['pdf'],
+    public_id: (req, file) => `itinerary-${Date.now()}`
   }
 });
 
-const fileFilter = (_req, file, cb) => {
-  if (file.mimetype === 'application/pdf') cb(null, true);
-  else cb(new Error('Only PDF files are allowed.'), false);
-};
-
-const upload = multer({
-  storage,
-  fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }
-});
-
-module.exports = upload;
+module.exports = multer({ storage });
