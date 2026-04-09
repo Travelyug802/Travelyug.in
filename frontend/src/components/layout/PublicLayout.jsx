@@ -279,6 +279,12 @@ export function Footer() {
         <div className="container-custom flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
           <p>© {new Date().getFullYear()} Travelyug. All rights reserved.</p>
           <p>Made with ❤️ for travel lovers</p>
+          <Link
+    to="/privacy-policy"
+    className="text-gray-400 hover:text-accent transition-colors"
+  >
+    Privacy Policy
+          </Link>
         </div>
       </div>
     </footer>

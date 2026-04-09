@@ -12,6 +12,7 @@ import ContactPage    from './pages/ContactPage';
 import BookingPage    from './pages/BookingPage';
 import HotelsPage     from './pages/HotelsPage';
 import VehiclesPage   from './pages/VehiclesPage';
+import PrivacyPolicy  from './pages/PrivacyPolicy';
 import NotFound       from './pages/NotFound';
 
 import AdminLayout    from './admin/AdminLayout';
@@ -59,6 +60,7 @@ export default function App() {
             <Route path="/reviews"      element={<ReviewsPage />} />
             <Route path="/contact"      element={<ContactPage />} />
             <Route path="/booking"      element={<BookingPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="*"             element={<NotFound />} />
           </Route>
 
